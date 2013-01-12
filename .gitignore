@@ -1,0 +1,9 @@
+# Python compiled files
+*.pyc
+
+# Databases
+*.yml
+
+# Mod directories and tmp directories
+tmp/
+mods/
