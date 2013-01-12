@@ -14,7 +14,7 @@ def GetModDBFile(target):
 	if moddb_file.status_code == 200:
 		output = open(target, 'w')
 		output.write(moddb_file.text)
-		print "Written file to disk."
+		#print "Written file to disk."
 	elif moddb_file.status_code == 403:
 		print "Something has gone server-side. Report a bug at the McMODDB website."
 	elif moddb_file.status_code == 404:

@@ -5,6 +5,7 @@ import sys
 import platform
 import moddb_config
 import hashlib
+import shutil
 
 if platform.system() == "Linux":
 	import linux_util as moddb_util
@@ -27,6 +28,9 @@ if moddb_config.Config['autodl'] == True:
 		if moddb_config.Config['checkdl'] == True:
 			tmpfile_hash = hashlib.md5(open(moddb_util.TmpModDBFileName(), 'r').read()).hexdigest()
 			localfile_hash = hashlib.md5(open(moddb_util.GlobalModDBFileName(), 'r').read()).hexdigest()
+			if moddb_config.Config['showchecksum'] == True:
+				print "Downloaded DB hash: " + tmpfile_hash
+				print "Local DB hash: " + localfile_hash
 			if tmpfile_hash != localfile_hash:
 				print "Local ModDB is different than the Server DB, replacing local DB with the downloaded DB."
 				print "If this is not true, the ModDB that was downloaded may be corrupt. Running this again should fix this."
@@ -50,8 +54,8 @@ elif moddb_config.Config['autodl'] == False:
 
 
 # Delete temporary files
-try:
-	os.removedirs(moddb_util.TmpDirectoryName())
-except OSError:
-	print "Unable to remove temp directories. Remove the tmp directory yourself."
+#os.removedirs(moddb_util.TmpDirectoryName())
+shutil.rmtree(moddb_util.TmpDirectoryName())
+#except OSError:
+#	print "Unable to remove temp directories. Remove the tmp directory yourself."
 
