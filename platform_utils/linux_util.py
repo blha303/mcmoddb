@@ -2,10 +2,10 @@ import os
 import requests
 import moddb_config 
 
-TmpDirectoryName = "./" + moddb_config.Config['tmpdir']
-ModDirectoryName = "./" + moddb_config.Config['moddir']
-DBDirectoryName = "./" + moddb_config.Config['dbdir']
-ServerDBLocation = moddb_config.Config['serverdb']
+TmpDirectoryName = "./" + moddb_config.Config['tmpdir'] + "/" 
+ModDirectoryName = "./" + moddb_config.Config['moddir'] + "/"
+DBDirectoryName = "./" + moddb_config.Config['dbdir'] + "/"
+ServerDBLocation = moddb_config.Config['serverdb'] 
 
 green = "\033[32m"
 red = "\033[31m"

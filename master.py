@@ -7,13 +7,14 @@ import moddb_config
 import hashlib
 import shutil
 import yml_parser
+import requests
 
 if platform.system() == "Linux":
 	print "Detected OS: Linux."
 	try:
 		import platform_utils.linux_util as moddb_util
 	except e:
-		print "ERROR: error %s caught, exiting"
+		print "ERROR: error %s caught, exiting" % e
 		sys.exit(1)
 	print moddb_util.green + "Loaded Linux util successfully." + moddb_util.off
 elif platform.system() == "Windows":
@@ -21,7 +22,7 @@ elif platform.system() == "Windows":
 	try:
 		import platform_utils.windows_util as moddb_util
 	except e:
-		print "ERROR: error %s caught, exiting"
+		print "ERROR: error %s caught, exiting" % e
 		sys.exit(1)
 	print moddb_util.green + "Loaded Windows util successfully." + moddb_util.off
 elif platform.system() == "Darwin":
@@ -29,8 +30,28 @@ elif platform.system() == "Darwin":
 	print "Feel free to submit a patch."
 	sys.exit(1)
 else:
-	print "Sorry, but your platform isn't currently supported."
-	sys.exit(1)
+	if moddb_config.Config['forced-platform'].lower() == "linux":
+		print "WARNING: Forcing platform Linux."
+		try:
+			import platform_utils.linux_util as moddb_util	
+		except e:
+			print "ERROR: error %s caught, exiting" % e
+			sys.exit(1)
+		print moddb_util.green + "Loaded Linux util successfully." + moddb_util.off
+	elif moddb_config.Config['forced-platform'].lower() == "windows":
+		print "WARNING: Forcing platform Windows."
+		try:
+			import platform_utils.windows_util as moddb_util
+		except e:
+			print "ERROR: error %s caught, exiting" % e
+		print moddb_util.green + "Loaded Windows util successfully." + moddb_util.off
+	elif moddb_config.Config['forced-platform'].lower() == "":
+		print "Sorry, but your platform isn't currently supported."
+		print "You can force a platform to load in the config with the forced-platform value."
+		sys.exit(1)
+	else:
+		print "ERROR: Forced platform is invalid."
+		sys.exit(1)
 
 moddb_util.SetupEnvironment()
 def UpdateDB(force=False):
@@ -85,8 +106,27 @@ def UpdateDB(force=False):
 		print moddb_util.green + "Update complete." + moddb_util.off
 UpdateDB(False)
 
-def InstallMod():
-	print "stub"
+def InstallMod(mod):
+	GetLink = yml_parser.GetModLink(moddb_util.GlobalModDBFile, mod)
+	if GetLink.lower() == "error":
+		print "ERROR: The specified mod either does not exist, or there is a incomplete entry for it in the database."
+	elif yml_parser.GetModType(moddb_util.GlobalModDBFile, mod) == "http":
+		mod_dl = requests.get(GetLink, stream=True)
+		print "Downloading mod " + mod + " from " + GetLink
+		outfile = open(moddb_util.ModDirectoryName + yml_parser.GetModFile(moddb_util.GlobalModDBFile, mod), 'w')
+		if mod_dl.status_code == 200:
+			outfile.write(mod_dl.raw.read())
+			print "File " + yml_parser.GetModFile(moddb_util.GlobalModDBFile, mod) + " has been written to your mods folder."
+		elif mod_dl.status_code == 403:
+			print "Permission denied on opening the remote file."
+		elif mod_dl.status_code == 404:
+			print "File not found on remote server. Your ModDB is probably out of date."
+		elif mod_dl.status_code == 500:
+			print "Remote server has issues."
+		else:
+			print "Something went wrong. Status code is " + str(mod_dl.status_code)
+	elif yml_parser.GetModType(moddb_util.GlobalModDBFile) == "git":
+		print "git support WIP"
 
 while True:
 	try:
@@ -111,7 +151,7 @@ while True:
 		print "updatedb: updates the database"
 	elif input_cmd[0] == "install":
 		try:
-			print yml_parser.GetModLink(moddb_util.GlobalModDBFile, input_cmd[1])
+			InstallMod(input_cmd[1])
 		except IndexError:
 			print "You must specify a mod"
 	else:

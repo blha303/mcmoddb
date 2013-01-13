@@ -28,4 +28,14 @@ def GetModLink(dbfile, mod):
 			return "error"
 	except KeyError:
 		print "Error: Mod %s does not exist, or there has been an internal error." % mod
+		return "error"
+	
+def GetModType(dbfile, mod):
+	input = LoadYMLFile(dbfile)
+	return input['mods'][str(mod)]['type']
+
+def GetModFile(dbfile, mod):
+	input = LoadYMLFile(dbfile)
+	if input['mods'][str(mod)]['type'] == "http":
+		return input['mods'][str(mod)]['outfile']
 	
