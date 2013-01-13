@@ -6,6 +6,8 @@ import platform
 import moddb_config
 import hashlib
 import shutil
+import yml_parser
+
 
 if platform.system() == "Linux":
 	import platform_utils.linux_util as moddb_util
@@ -73,12 +75,24 @@ def UpdateDB(force=False):
 
 UpdateDB(False)
 
+def InstallMod():
+	print "stub"
+
 while True:
-	input_cmd = raw_input("mcmoddb> ").lower()
+	try:
+		input_cmd = raw_input("mcmoddb> ").lower()
+	except EOFError:
+		print 'Quitting...'
+		input_cmd = "quit"
+	except KeyboardInterrupt:
+		print 'Quitting...'
+		input_cmd = "quit"
 	if input_cmd == "quit" or input_cmd == "exit":
 		break
 	elif input_cmd == "updatedb":
 		UpdateDB(True)
+	elif input_cmd == "list":
+		yml_parser.ListMods(moddb_util.GlobalModDBFile)
 	elif input_cmd == "help":
 		print "Commands:"
 		print "quit: quits the prompt"
