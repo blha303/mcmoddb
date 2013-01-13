@@ -1,36 +1,42 @@
 import os
 import requests
+import moddb_config 
+
+TmpDirectoryName = ".\\" + moddb_config.Config['tmpdir']
+ModDirectoryName = ".\\" + moddb_config.Config['moddir']
+DBDirectoryName = ".\\" + moddb_config.Config['dbdir']
+ServerDBLocation = moddb_config.Config['serverdb']
+
+green = ""
+red = ""
+off = ""
 
 def SetupEnvironment():
-	if not os.path.exists(".\tmp"):
-		os.makedirs(".\tmp")
-	if not os.path.exists(".\mods"):
-		os.makedirs(".\mods")
-	if not os.path.isfile(".\tmp\moddb_global.yml"):
-		GetModDBFile('.\tmp\moddb_global.yml')
+	if not os.path.exists(TmpDirectoryName):
+		os.makedirs(TmpDirectoryName)
+	if not os.path.exists(ModDirectoryName):
+		os.makedirs(ModDirectoryName)
+	if not os.path.exists(DBDirectoryName):
+		os.makedirs(DBDirectoryName)
+	if not os.path.isfile(TmpModDBFile):
+		GetModDBFile(TmpModDBFile)
 
 def GetModDBFile(target):
-	moddb_file = requests.get("http://elemeno.dyndns.org/moddb/moddb_global.yml")
+	moddb_file = requests.get(ServerDBLocation)
 	if moddb_file.status_code == 200:
 		output = open(target, 'w')
 		output.write(moddb_file.text)
-		print "Written file to disk."
+		#print "Written file to disk."
 	elif moddb_file.status_code == 403:
 		print "Something has gone server-side. Report a bug at the McMODDB website."
+		sys.exit(1)
 	elif moddb_file.status_code == 404:
 		print "The moddb file was not found."
+		sys.exit(1)
 	else:
 		print "Something has gone very wrong."
 		print "Status code: " + str(moddb_file.status_code)
 
-def TmpModDBFileName():
-	return ".\tmp\moddb_global.yml"
-
-def GlobalModDBFileName():
-	return ".\moddb_global.yml"
-
-def LocalModDBFileName():
-	return ".\moddb_local.yml" # I should make these configurable. 
-
-def TmpDirectoryName():
-	return ".\tmp"
+TmpModDBFile = TmpDirectoryName + "\\" + moddb_config.Config['tmpdbfile']
+LocalModDBFile = DBDirectoryName + "\\" + moddb_config.Config['localdbfile']
+GlobalModDBFile = DBDirectoryName + "\\" + moddb_config.Config['globaldbfile']

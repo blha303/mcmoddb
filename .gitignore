@@ -8,3 +8,6 @@
 tmp/
 mods/
 db/
+
+# My syncdb script
+syncdb.sh

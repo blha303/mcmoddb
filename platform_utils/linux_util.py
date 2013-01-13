@@ -7,6 +7,10 @@ ModDirectoryName = "./" + moddb_config.Config['moddir']
 DBDirectoryName = "./" + moddb_config.Config['dbdir']
 ServerDBLocation = moddb_config.Config['serverdb']
 
+green = "\033[32m"
+red = "\033[31m"
+off = "\033[0m"
+
 def SetupEnvironment():
 	if not os.path.exists(TmpDirectoryName):
 		os.makedirs(TmpDirectoryName)
