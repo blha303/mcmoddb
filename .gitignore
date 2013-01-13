@@ -7,3 +7,4 @@
 # Mod directories and tmp directories
 tmp/
 mods/
+db/
