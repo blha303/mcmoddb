@@ -9,6 +9,7 @@ Config = {
 	'tmpdbfile': 'moddb_tmp.yml', # Temporary db file
 	'localdbfile': 'moddb_local.yml', # Local db file
 	'globaldbfile': 'moddb_global.yml', # Global db file
-	'serverdb': "http://elemeno.dyndns.org/moddb/moddb_global.yml"
-	
+	'serverdb': "http://elemeno.dyndns.org/moddb/moddb_global.yml",
+	'installdbfile': 'installed.yml',
+	'force-platform': ''
 }

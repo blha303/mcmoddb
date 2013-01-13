@@ -1,13 +1,14 @@
-# Python compiled files
+# pyc
 *.pyc
 
-# Databases
-*.yml
-
-# Mod directories and tmp directories
-tmp/
-mods/
+# db
 db/
 
-# My syncdb script
+# misc directories
+mods/
+tmp/
+
+*.yml
+db/*.yml
+
 syncdb.sh

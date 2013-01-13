@@ -37,6 +37,7 @@ def GetModDBFile(target):
 		print "Something has gone very wrong."
 		print "Status code: " + str(moddb_file.status_code)
 
-TmpModDBFile = TmpDirectoryName + "/" + moddb_config.Config['tmpdbfile']
-LocalModDBFile = DBDirectoryName + "/" + moddb_config.Config['localdbfile']
-GlobalModDBFile = DBDirectoryName + "/" + moddb_config.Config['globaldbfile']
+TmpModDBFile = TmpDirectoryName + moddb_config.Config['tmpdbfile']
+LocalModDBFile = DBDirectoryName + moddb_config.Config['localdbfile']
+GlobalModDBFile = DBDirectoryName + moddb_config.Config['globaldbfile']
+InstalledDBFile = DBDirectoryName + moddb_config.Config['installdbfile']

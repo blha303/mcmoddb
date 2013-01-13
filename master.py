@@ -110,6 +110,8 @@ def InstallMod(mod):
 	GetLink = yml_parser.GetModLink(moddb_util.GlobalModDBFile, mod)
 	if GetLink.lower() == "error":
 		print "ERROR: The specified mod either does not exist, or there is a incomplete entry for it in the database."
+	elif yml_parser.IsModInstalled(moddb_util.InstalledDBFile, mod, yml_parser.GetModVersion(moddb_util.GlobalModDBFile, mod)) == True:
+		print "Specified mod is already installed at the latest version."
 	elif yml_parser.GetModType(moddb_util.GlobalModDBFile, mod) == "http":
 		mod_dl = requests.get(GetLink, stream=True)
 		print "Downloading mod " + mod + " from " + GetLink
@@ -117,6 +119,7 @@ def InstallMod(mod):
 		if mod_dl.status_code == 200:
 			outfile.write(mod_dl.raw.read())
 			print "File " + yml_parser.GetModFile(moddb_util.GlobalModDBFile, mod) + " has been written to your mods folder."
+			yml_parser.OutputInstalled(moddb_util.InstalledDBFile, mod, yml_parser.GetModVersion(moddb_util.GlobalModDBFile, mod))
 		elif mod_dl.status_code == 403:
 			print "Permission denied on opening the remote file."
 		elif mod_dl.status_code == 404:
@@ -149,11 +152,18 @@ while True:
 		print "exit: see quit"
 		print "help: displays this help"
 		print "updatedb: updates the database"
+		print "setupdb: Sets up your installed database."
+		print "populatedb: Populates your installed database with the server database."
+		print "install: Installs a mod."
 	elif input_cmd[0] == "install":
 		try:
 			InstallMod(input_cmd[1])
 		except IndexError:
 			print "You must specify a mod"
+	elif input_cmd[0] == "setupdb":
+		yml_parser.OutputInstalled(moddb_util.InstalledDBFile, "nomod", "0.0", True)
+	elif input_cmd[0] == "populatedb":
+		yml_parser.PopulateInstalledDB(moddb_util.InstalledDBFile, moddb_util.GlobalModDBFile)
 	else:
 		print "Unknown command"
 	#print input_cmd[0]
