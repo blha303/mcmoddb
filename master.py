@@ -1,5 +1,3 @@
-#!/usr/bin/env python2
-
 import os
 import sys
 import platform
@@ -13,16 +11,16 @@ if platform.system() == "Linux":
 	print "Detected OS: Linux."
 	try:
 		import platform_utils.linux_util as moddb_util
-	except e:
-		print "ERROR: error %s caught, exiting" % e
+	except ImportError:
+		print "ERROR: error ImportError caught, exiting"
 		sys.exit(1)
 	print moddb_util.green + "Loaded Linux util successfully." + moddb_util.off
 elif platform.system() == "Windows":
 	print "Detected OS: Windows"
 	try:
 		import platform_utils.windows_util as moddb_util
-	except e:
-		print "ERROR: error %s caught, exiting" % e
+	except ImportError:
+		print "ERROR: error ImportError caught, exiting"
 		sys.exit(1)
 	print moddb_util.green + "Loaded Windows util successfully." + moddb_util.off
 elif platform.system() == "Darwin":
@@ -34,16 +32,16 @@ else:
 		print "WARNING: Forcing platform Linux."
 		try:
 			import platform_utils.linux_util as moddb_util	
-		except e:
-			print "ERROR: error %s caught, exiting" % e
+		except ImportError:
+			print "ERROR: error ImportError caught, exiting"
 			sys.exit(1)
 		print moddb_util.green + "Loaded Linux util successfully." + moddb_util.off
 	elif moddb_config.Config['forced-platform'].lower() == "windows":
 		print "WARNING: Forcing platform Windows."
 		try:
 			import platform_utils.windows_util as moddb_util
-		except e:
-			print "ERROR: error %s caught, exiting" % e
+		except ImportError:
+			print "ERROR: error ImportError caught, exiting"
 		print moddb_util.green + "Loaded Windows util successfully." + moddb_util.off
 	elif moddb_config.Config['forced-platform'].lower() == "":
 		print "Sorry, but your platform isn't currently supported."
